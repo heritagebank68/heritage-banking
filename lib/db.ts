@@ -1,7 +1,12 @@
-import { sql } from '@vercel/postgres'
+import { neon } from '@neondatabase/serverless'
 import type { User, Transaction } from './types'
 
+function getSQL() {
+  return neon(process.env.POSTGRES_URL!)
+}
+
 async function ensureSchema() {
+  const sql = getSQL()
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -60,24 +65,28 @@ function rowToTransaction(row: Record<string, unknown>): Transaction {
 
 export async function getAllUsers(): Promise<User[]> {
   await ensureSchema()
-  const { rows } = await sql`SELECT * FROM users ORDER BY created_at DESC`
+  const sql = getSQL()
+  const rows = await sql`SELECT * FROM users ORDER BY created_at DESC`
   return rows.map(rowToUser)
 }
 
 export async function getUserById(id: string): Promise<User | null> {
   await ensureSchema()
-  const { rows } = await sql`SELECT * FROM users WHERE id = ${id}`
+  const sql = getSQL()
+  const rows = await sql`SELECT * FROM users WHERE id = ${id}`
   return rows.length ? rowToUser(rows[0]) : null
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   await ensureSchema()
-  const { rows } = await sql`SELECT * FROM users WHERE email = ${email}`
+  const sql = getSQL()
+  const rows = await sql`SELECT * FROM users WHERE email = ${email}`
   return rows.length ? rowToUser(rows[0]) : null
 }
 
 export async function createUser(user: User): Promise<void> {
   await ensureSchema()
+  const sql = getSQL()
   await sql`
     INSERT INTO users (id, full_name, email, password, phone, account_number, account_type, preferred_currency, created_at)
     VALUES (${user.id}, ${user.fullName}, ${user.email}, ${user.password}, ${user.phone}, ${user.accountNumber}, ${user.accountType}, ${user.preferredCurrency || 'USD'}, ${user.createdAt})
@@ -85,12 +94,14 @@ export async function createUser(user: User): Promise<void> {
 }
 
 export async function updateUserPassword(id: string, hash: string): Promise<void> {
+  const sql = getSQL()
   await sql`UPDATE users SET password = ${hash} WHERE id = ${id}`
 }
 
 export async function getUserTransactions(userId: string): Promise<Transaction[]> {
   await ensureSchema()
-  const { rows } = await sql`
+  const sql = getSQL()
+  const rows = await sql`
     SELECT * FROM transactions WHERE user_id = ${userId} ORDER BY created_at DESC
   `
   return rows.map(rowToTransaction)
@@ -98,12 +109,14 @@ export async function getUserTransactions(userId: string): Promise<Transaction[]
 
 export async function getAllTransactions(): Promise<Transaction[]> {
   await ensureSchema()
-  const { rows } = await sql`SELECT * FROM transactions ORDER BY created_at DESC`
+  const sql = getSQL()
+  const rows = await sql`SELECT * FROM transactions ORDER BY created_at DESC`
   return rows.map(rowToTransaction)
 }
 
 export async function createTransaction(tx: Transaction): Promise<void> {
   await ensureSchema()
+  const sql = getSQL()
   await sql`
     INSERT INTO transactions (id, user_id, type, category, amount, description, balance_before, balance_after, created_at)
     VALUES (${tx.id}, ${tx.userId}, ${tx.type}, ${tx.category}, ${tx.amount}, ${tx.description}, ${tx.balanceBefore}, ${tx.balanceAfter}, ${tx.createdAt})
@@ -112,7 +125,8 @@ export async function createTransaction(tx: Transaction): Promise<void> {
 
 export async function getUserBalance(userId: string): Promise<number> {
   await ensureSchema()
-  const { rows } = await sql`
+  const sql = getSQL()
+  const rows = await sql`
     SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN amount ELSE -amount END), 0) AS balance
     FROM transactions WHERE user_id = ${userId}
   `
