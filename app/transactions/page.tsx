@@ -43,7 +43,7 @@ export default async function TransactionsPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar user={{ fullName: user.fullName, accountNumber: user.accountNumber, balance }} />
-      <main className="ml-64 flex-1 p-8 space-y-6">
+      <main className="md:ml-64 flex-1 p-4 md:p-8 pt-20 md:pt-8 space-y-6 min-w-0">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-yellow-100 text-yellow-600">
             <Receipt size={20} />

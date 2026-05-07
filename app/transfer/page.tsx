@@ -58,7 +58,7 @@ export default function TransferPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar user={user} />
-      <main className="ml-64 flex-1 p-8 space-y-6 max-w-2xl">
+      <main className="md:ml-64 flex-1 p-4 md:p-8 pt-20 md:pt-8 space-y-6 max-w-2xl min-w-0">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
             <Send size={20} />

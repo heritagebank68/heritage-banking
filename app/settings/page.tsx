@@ -38,7 +38,7 @@ export default async function SettingsPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar user={{ fullName: user.fullName, accountNumber: user.accountNumber, balance }} />
-      <main className="ml-64 flex-1 p-8 space-y-6 max-w-2xl">
+      <main className="md:ml-64 flex-1 p-4 md:p-8 pt-20 md:pt-8 space-y-6 max-w-2xl min-w-0">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-600">
             <Settings size={20} />

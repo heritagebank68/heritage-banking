@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar user={{ fullName: user.fullName, accountNumber: user.accountNumber, balance }} />
-      <main className="ml-64 flex-1 p-8 space-y-6">
+      <main className="md:ml-64 flex-1 p-4 md:p-8 pt-20 md:pt-8 space-y-6 min-w-0">
         <div>
           <h1 className="text-2xl font-bold text-[#1A1A2E]">Hi there, {firstName}!</h1>
           <p className="text-[#6B7280] mt-1">Here&apos;s what&apos;s happening with your account today.</p>
@@ -73,7 +73,7 @@ export default async function DashboardPage() {
         {/* Quick Actions */}
         <div>
           <h2 className="text-base font-semibold text-[#1A1A2E] mb-3">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
             {quickActions.map(({ href, label, icon: Icon, color }) => (
               <Link
                 key={href}
