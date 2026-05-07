@@ -1,25 +1,14 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Send } from 'lucide-react'
+import { Send, PhoneCall, Mail, AlertCircle } from 'lucide-react'
 import { Sidebar } from '@/components/Sidebar'
-import { formatCurrency } from '@/lib/utils'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 
 interface UserData { fullName: string; accountNumber: string; balance: number; preferredCurrency?: string }
 
 export default function TransferPage() {
   const router = useRouter()
   const [user, setUser] = useState<UserData | null>(null)
-  const [bank, setBank] = useState('')
-  const [accountNumber, setAccountNumber] = useState('')
-  const [amount, setAmount] = useState('')
-  const [narration, setNarration] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetch('/api/users/me').then(r => r.json()).then(d => {
@@ -28,35 +17,10 @@ export default function TransferPage() {
     })
   }, [router])
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(''); setSuccess('')
-    setLoading(true)
-    try {
-      const res = await fetch('/api/transfer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bank, accountNumber, amount: Number(amount), narration }),
-      })
-      const data = await res.json()
-      if (!data.success) {
-        setError(data.message)
-      } else {
-        setSuccess('Transfer successful!')
-        setBank(''); setAccountNumber(''); setAmount(''); setNarration('')
-        setUser(prev => prev ? { ...prev, balance: data.data.balanceAfter } : prev)
-      }
-    } catch {
-      setError('Something went wrong.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   if (!user) return null
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#F4F6F9]">
       <Sidebar user={user} />
       <main className="md:ml-64 flex-1 p-4 md:p-8 pt-20 md:pt-8 space-y-6 max-w-2xl min-w-0">
         <div className="flex items-center gap-3">
@@ -69,37 +33,52 @@ export default function TransferPage() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-xl bg-white border border-[#E5E7EB] px-5 py-4">
-          <span className="text-sm text-[#6B7280]">Available Balance</span>
-          <span className="text-lg font-bold text-navy">
-            {formatCurrency(user.balance, user.preferredCurrency)}
-          </span>
-        </div>
-
-        <Card className="p-6 space-y-5">
-          <div>
-            <h2 className="font-semibold text-[#1A1A2E]">Recipient Details</h2>
-            <p className="text-sm text-[#6B7280]">Transfer funds to any bank account</p>
+        <div className="rounded-2xl bg-white border border-blue-200 p-6 md:p-8 space-y-5 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-500">
+              <AlertCircle size={24} />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-[#1A1A2E]">Contact Support to Transfer</h2>
+              <p className="mt-1 text-sm text-[#6B7280] leading-relaxed">
+                For your security, transfers must be processed through our support team.
+                Please reach out to us via any of the channels below and we will assist you promptly.
+              </p>
+            </div>
           </div>
 
-          {error && <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>}
-          {success && <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{success}</div>}
+          <div className="border-t border-[#E5E7EB] pt-5 space-y-3">
+            <a
+              href="tel:+18001234567"
+              className="flex items-center gap-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3.5 hover:border-navy hover:bg-navy/5 transition-colors"
+            >
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-navy/10 text-navy">
+                <PhoneCall size={18} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[#1A1A2E]">Call Us</p>
+                <p className="text-xs text-[#6B7280]">+1 (800) 123-4567 — Mon–Fri, 8am–6pm</p>
+              </div>
+            </a>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input label="Bank" placeholder="e.g. Chase Bank" value={bank} onChange={e => setBank(e.target.value)} required />
-            <Input label="Account Number" placeholder="0000000000" value={accountNumber} onChange={e => setAccountNumber(e.target.value)} required />
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-[#1A1A2E]">Amount</label>
-              <input
-                type="number" min="0.01" step="0.01" placeholder="0.00"
-                value={amount} onChange={e => setAmount(e.target.value)} required
-                className="w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-sm outline-none focus:border-navy focus:ring-2 focus:ring-navy/20"
-              />
-            </div>
-            <Input label="Narration (Optional)" placeholder="e.g. Rent payment" value={narration} onChange={e => setNarration(e.target.value)} />
-            <Button type="submit" className="w-full py-3" loading={loading}>Send Transfer</Button>
-          </form>
-        </Card>
+            <a
+              href="mailto:support@hccu.org"
+              className="flex items-center gap-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3.5 hover:border-navy hover:bg-navy/5 transition-colors"
+            >
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-navy/10 text-navy">
+                <Mail size={18} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[#1A1A2E]">Email Us</p>
+                <p className="text-xs text-[#6B7280]">support@hccu.org — We reply within 24 hours</p>
+              </div>
+            </a>
+          </div>
+
+          <p className="text-xs text-[#9CA3AF] text-center pt-1">
+            Please have your account number <span className="font-mono font-semibold">{user.accountNumber}</span> ready when you contact us.
+          </p>
+        </div>
       </main>
     </div>
   )
