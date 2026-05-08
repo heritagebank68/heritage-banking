@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const user = await getUserById(userId)
     if (!user) return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 })
 
-    const { password: _p, ...safeUser } = user
+    const { password: _p, pin: _pin, ...safeUser } = user
     const balance = await getUserBalance(userId)
 
     return NextResponse.json({ success: true, data: { ...safeUser, balance } })

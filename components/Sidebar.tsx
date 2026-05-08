@@ -4,7 +4,8 @@ import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import {
   LayoutDashboard, ArrowDownLeft, ArrowUpRight, Send,
-  Receipt, Settings, LogOut, Menu, X
+  Receipt, CreditCard, Settings, LogOut, Menu, X,
+  Bell, BadgeDollarSign, BookUser
 } from 'lucide-react'
 
 const navItems = [
@@ -13,6 +14,10 @@ const navItems = [
   { href: '/withdraw', label: 'Withdraw', icon: ArrowUpRight },
   { href: '/transfer', label: 'Transfer', icon: Send },
   { href: '/transactions', label: 'Transactions', icon: Receipt },
+  { href: '/cards', label: 'My Card', icon: CreditCard },
+  { href: '/loans', label: 'Loans', icon: BadgeDollarSign },
+  { href: '/beneficiaries', label: 'Beneficiaries', icon: BookUser },
+  { href: '/notifications', label: 'Notifications', icon: Bell },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -91,16 +96,6 @@ export function Sidebar({ user }: SidebarProps) {
     <>
       {/* Mobile top bar */}
       <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#001F45] text-white z-20 flex items-center justify-between px-4 shadow-lg">
-        <Link
-          href="/settings"
-          className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-white/10 transition-colors"
-          aria-label="Settings"
-        >
-          <Settings size={22} />
-        </Link>
-
-        <span className="text-sm font-bold tracking-wide">Heritage CU</span>
-
         <button
           onClick={() => setOpen(true)}
           className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-white/10 transition-colors"
@@ -108,6 +103,16 @@ export function Sidebar({ user }: SidebarProps) {
         >
           <Menu size={22} />
         </button>
+
+        <span className="text-sm font-bold tracking-wide">Heritage CU</span>
+
+        <Link
+          href="/settings"
+          className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-white/10 transition-colors"
+          aria-label="Settings"
+        >
+          <Settings size={22} />
+        </Link>
       </header>
 
       {/* Desktop sidebar */}
@@ -115,14 +120,15 @@ export function Sidebar({ user }: SidebarProps) {
         {navContent}
       </aside>
 
-      {/* Mobile drawer */}
-      {open && (
-        <div className="md:hidden fixed inset-0 z-40 flex">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          />
-          <aside className="relative flex h-full w-72 max-w-[85vw] flex-col bg-[#001F45] text-white shadow-2xl">
+      {/* Mobile drawer — slides in from left */}
+      <div
+        className={`md:hidden fixed inset-0 z-40 transition-opacity duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+      >
+        <div
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+        />
+        <aside className={`relative flex h-full w-72 max-w-[85vw] flex-col bg-[#001F45] text-white shadow-2xl transition-transform duration-300 ease-in-out ${open ? 'translate-x-0' : '-translate-x-full'}`}>
             <button
               onClick={() => setOpen(false)}
               className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
@@ -132,8 +138,7 @@ export function Sidebar({ user }: SidebarProps) {
             </button>
             {navContent}
           </aside>
-        </div>
-      )}
+      </div>
     </>
   )
 }

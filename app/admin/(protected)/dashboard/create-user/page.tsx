@@ -13,6 +13,7 @@ export default function CreateUserPage() {
   const [phone, setPhone] = useState('')
   const [accountType, setAccountType] = useState<'Savings' | 'Checking'>('Savings')
   const [preferredCurrency, setPreferredCurrency] = useState('USD')
+  const [pin, setPin] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,7 +26,7 @@ export default function CreateUserPage() {
       const res = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, password, phone, accountType, preferredCurrency }),
+        body: JSON.stringify({ fullName, email, password, phone, accountType, preferredCurrency, pin: pin || undefined }),
       })
       const data = await res.json()
       if (!data.success) {
@@ -33,7 +34,7 @@ export default function CreateUserPage() {
       } else {
         setSuccess(`Account created for ${data.data.fullName} (${data.data.accountNumber})`)
         setFullName(''); setEmail(''); setPassword(''); setPhone('')
-        setAccountType('Savings'); setPreferredCurrency('USD')
+        setAccountType('Savings'); setPreferredCurrency('USD'); setPin('')
       }
     } catch {
       setError('Something went wrong. Please try again.')
@@ -87,6 +88,20 @@ export default function CreateUserPage() {
                 <option key={c.code} value={c.code}>{c.code} — {c.name}</option>
               ))}
             </select>
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-[#1A1A2E]">Transaction PIN (Optional)</label>
+            <input
+              type="password"
+              inputMode="numeric"
+              placeholder="4-digit PIN"
+              maxLength={4}
+              value={pin}
+              onChange={e => { if (/^\d{0,4}$/.test(e.target.value)) setPin(e.target.value) }}
+              className="w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-sm outline-none focus:border-navy focus:ring-2 focus:ring-navy/20 tracking-[0.5em] text-center font-bold"
+            />
+            <p className="text-xs text-[#9CA3AF]">Member can also set this themselves in Settings</p>
           </div>
 
           <Button type="submit" loading={loading} className="w-full py-3">Create Account</Button>

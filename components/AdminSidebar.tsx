@@ -2,12 +2,14 @@
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Users, UserPlus, Landmark, LogOut, Menu, X } from 'lucide-react'
+import { Users, UserPlus, Landmark, Receipt, LogOut, Menu, X, BadgeDollarSign } from 'lucide-react'
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Members', icon: Users },
   { href: '/admin/dashboard/create-user', label: 'Create Member', icon: UserPlus },
   { href: '/admin/dashboard/fund', label: 'Fund Account', icon: Landmark },
+  { href: '/admin/dashboard/transactions', label: 'Transactions', icon: Receipt },
+  { href: '/admin/dashboard/loans', label: 'Loan Applications', icon: BadgeDollarSign },
 ]
 
 export function AdminSidebar() {
@@ -32,7 +34,9 @@ export function AdminSidebar() {
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {navItems.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href
+          const active = href === '/admin/dashboard'
+            ? pathname === '/admin/dashboard' || pathname.startsWith('/admin/dashboard/members')
+            : pathname === href || pathname.startsWith(href + '/')
           return (
             <Link
               key={href}

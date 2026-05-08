@@ -5,7 +5,9 @@ import { getUserById, getUserBalance, getUserTransactions } from '@/lib/db'
 import { Sidebar } from '@/components/Sidebar'
 import { formatCurrency } from '@/lib/utils'
 import Link from 'next/link'
-import { ArrowDownLeft, ArrowUpRight, Send, Receipt, Copy } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight, Send, Receipt } from 'lucide-react'
+import SpendingAnalytics from '@/components/SpendingAnalytics'
+import BalanceCard from '@/components/BalanceCard'
 
 export default async function DashboardPage() {
   const cookieStore = cookies()
@@ -28,6 +30,7 @@ export default async function DashboardPage() {
     getUserTransactions(userId),
   ])
   const userTxs = allTxs.slice(0, 5)
+  const currency = user.preferredCurrency ?? 'USD'
 
   const firstName = user.fullName.split(' ')[0]
 
@@ -48,27 +51,12 @@ export default async function DashboardPage() {
         </div>
 
         {/* Balance Card */}
-        <div className="rounded-2xl bg-navy p-6 text-white">
-          <p className="text-sm text-white/70 mb-1">Total Balance</p>
-          <p className="text-4xl font-bold mb-4">
-            {formatCurrency(balance, user.preferredCurrency)}
-          </p>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-white/60">Account Number</p>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="font-mono text-sm">{user.accountNumber}</span>
-                <Copy size={13} className="text-white/50 cursor-pointer hover:text-white" />
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-white/60">Account Type</p>
-              <span className="inline-block mt-0.5 rounded-full bg-white/20 px-3 py-0.5 text-xs font-medium">
-                {user.accountType}
-              </span>
-            </div>
-          </div>
-        </div>
+        <BalanceCard
+          balance={balance}
+          currency={currency}
+          accountNumber={user.accountNumber}
+          accountType={user.accountType}
+        />
 
         {/* Quick Actions */}
         <div>
@@ -88,6 +76,9 @@ export default async function DashboardPage() {
             ))}
           </div>
         </div>
+
+        {/* Spending Analytics */}
+        <SpendingAnalytics transactions={allTxs} currency={currency} />
 
         {/* Recent Transactions */}
         <div className="rounded-xl bg-white border border-[#E5E7EB] overflow-hidden">
@@ -112,9 +103,9 @@ export default async function DashboardPage() {
                   </div>
                   <div className="text-right">
                     <p className={`text-sm font-semibold ${tx.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
-                      {tx.type === 'credit' ? '+' : ''}{formatCurrency(tx.type === 'debit' ? -tx.amount : tx.amount, user.preferredCurrency)}
+                      {tx.type === 'credit' ? '+' : ''}{formatCurrency(tx.type === 'debit' ? -tx.amount : tx.amount, currency)}
                     </p>
-                    <p className="text-xs text-[#6B7280]">Bal: {formatCurrency(tx.balanceAfter, user.preferredCurrency)}</p>
+                    <p className="text-xs text-[#6B7280]">Bal: {formatCurrency(tx.balanceAfter, currency)}</p>
                   </div>
                 </li>
               ))}

@@ -5,6 +5,7 @@ import { getUserById, getUserBalance } from '@/lib/db'
 import { Sidebar } from '@/components/Sidebar'
 import { formatCurrency } from '@/lib/utils'
 import PasswordForm from './PasswordForm'
+import PinForm from './PinForm'
 import { Settings } from 'lucide-react'
 
 export default async function SettingsPage() {
@@ -67,6 +68,9 @@ export default async function SettingsPage() {
 
         {/* Password */}
         <PasswordForm />
+
+        {/* Transaction PIN */}
+        <PinForm hasPin={!!user.pin} />
       </main>
     </div>
   )
