@@ -35,7 +35,7 @@ export default function NotificationsList({ initialNotifications }: { initialNot
           <Bell size={24} className="text-[#9CA3AF]" />
         </div>
         <p className="text-sm font-medium text-[#1A1A2E]">No notifications yet</p>
-        <p className="text-xs text-[#6B7280]">We'll notify you when something important happens</p>
+        <p className="text-xs text-[#6B7280]">We will notify you when something important happens</p>
       </div>
     )
   }

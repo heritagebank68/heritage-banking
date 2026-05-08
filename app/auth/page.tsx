@@ -130,7 +130,7 @@ export default function AuthPage() {
             <div>
               <h2 className="text-lg font-bold text-[#1A1A2E]">Reset Your Password</h2>
               <p className="text-sm text-[#6B7280] mt-1">
-                For your security, password resets are handled by our support team. Please contact us using one of the methods below and we'll verify your identity and reset your password.
+                For your security, password resets are handled by our support team. Please contact us using one of the methods below and we will verify your identity and reset your password.
               </p>
             </div>
 

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getUserById, getUserBalance, getUserTransactions } from '@/lib/db'
 import { formatCurrency } from '@/lib/utils'
-import { ArrowLeft, User, Receipt } from 'lucide-react'
+import { ArrowLeft, Receipt } from 'lucide-react'
 
 export default async function MemberDetailPage({ params }: { params: { id: string } }) {
   const user = await getUserById(params.id)
