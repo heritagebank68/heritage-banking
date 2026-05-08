@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "a870e85e-6665-43d2-a7c7-84856fd60119",
+    "fullName": "mary",
+    "email": "talk31557@gmail.com",
+    "password": "$2b$10$kR/bp1QcvLWhHg5OfJ81v.3Dt77.rGIoW9NGUrx99gb8EsJSMy0Wy",
+    "phone": "",
+    "accountNumber": "5201497971",
+    "accountType": "Savings",
+    "preferredCurrency": "USD",
+    "createdAt": "2026-05-07T16:06:15.772Z",
+    "pin": "$2b$10$xxJ0.Va1rPQq2pFSlD3b7.fk9uFDSaWhe8pxwSq/lrFco4cD22vQ2"
+  }
+]

@@ -5,6 +5,7 @@
       "name": "banking",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/mac/Documents/mywebsite/banking",
       "port": 3000
     }
   ]

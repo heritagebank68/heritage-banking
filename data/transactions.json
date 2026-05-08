@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "870e492b-cedf-4a0c-90b7-5a0ffe379163",
+    "userId": "a870e85e-6665-43d2-a7c7-84856fd60119",
+    "type": "credit",
+    "category": "Admin Credit",
+    "amount": 160000,
+    "description": "inheritance",
+    "balanceBefore": 0,
+    "balanceAfter": 160000,
+    "createdAt": "2025-01-15T16:06:00.000Z"
+  }
+]
