@@ -1,6 +1,6 @@
 'use client'
 import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
+  Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
 } from 'recharts'
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react'
@@ -100,32 +100,36 @@ export default function SpendingAnalytics({ transactions, currency }: Props) {
         {/* Donut — category breakdown */}
         <div className="rounded-xl bg-white border border-[#E5E7EB] p-5">
           <p className="text-sm font-semibold text-[#1A1A2E] mb-4">By Category</p>
-          <div className="flex items-center gap-4">
-            <ResponsiveContainer width="100%" height={160}>
-              <PieChart>
-                <Pie
-                  data={donutData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={45}
-                  outerRadius={75}
-                  paddingAngle={3}
-                  dataKey="value"
-                >
-                  {donutData.map((entry, i) => (
-                    <Cell
+          {(() => {
+            const size = 160, r = 60, sw = 30
+            const circ = 2 * Math.PI * r
+            const total = donutData.reduce((s, d) => s + d.value, 0)
+            if (total === 0) return null
+            let acc = 0
+            return (
+              <svg width="100%" height={size} viewBox="0 0 160 160" style={{ display: 'block' }}>
+                {donutData.map((entry, i) => {
+                  const arc = (entry.value / total) * circ
+                  const offset = circ / 4 - acc
+                  acc += arc
+                  const isFull = arc >= circ - 0.01
+                  return (
+                    <circle
                       key={entry.name}
-                      fill={CATEGORY_COLORS[entry.name] ?? `hsl(${i * 60}, 65%, 55%)`}
+                      cx={80} cy={80} r={r}
+                      fill="none"
+                      stroke={CATEGORY_COLORS[entry.name] ?? `hsl(${i * 60},65%,55%)`}
+                      strokeWidth={sw}
+                      {...(isFull ? {} : {
+                        strokeDasharray: `${arc} ${circ - arc}`,
+                        strokeDashoffset: offset,
+                      })}
                     />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(val) => formatCurrency(Number(val ?? 0), currency)}
-                  contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', fontSize: '12px' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+                  )
+                })}
+              </svg>
+            )
+          })()}
           {/* Legend */}
           <div className="mt-3 space-y-1.5">
             {donutData.map((entry, i) => (
@@ -147,7 +151,7 @@ export default function SpendingAnalytics({ transactions, currency }: Props) {
         <div className="rounded-xl bg-white border border-[#E5E7EB] p-5">
           <p className="text-sm font-semibold text-[#1A1A2E] mb-4">Last 6 Months</p>
           <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={barData} barSize={14} barGap={4}>
+            <BarChart data={barData} barSize={14} barGap={4} accessibilityLayer={false}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
               <YAxis
@@ -158,8 +162,9 @@ export default function SpendingAnalytics({ transactions, currency }: Props) {
                 width={36}
               />
               <Tooltip
+                cursor={{ fill: 'transparent' }}
                 formatter={(val) => formatCurrency(Number(val ?? 0), currency)}
-                contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', fontSize: '12px' }}
+                contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', fontSize: '12px', backgroundColor: '#fff' }}
               />
               <Legend
                 iconType="circle"
